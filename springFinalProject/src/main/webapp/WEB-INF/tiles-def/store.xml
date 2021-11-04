@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+    <definition name="storeRegister" extends="main">
+    	<put-attribute name="title" value="상품 등록"/>
+    	<put-attribute name="body" value="/WEB-INF/views/store/storeRegister.jsp"/>
+    </definition>
+    <definition name="storeCategory" extends="main">
+    	<put-attribute name="title" value="카테고리"/>
+    	<put-attribute name="body" value="/WEB-INF/views/store/storeCategory.jsp"/>
+    </definition>
+    <definition name="storeProduct" extends="main">
+    	<put-attribute name="title" value= "상품 상세"/>
+    	<put-attribute name="body" value="/WEB-INF/views/store/storeProduct.jsp"/>
+    </definition>
+    <definition name="storeModify" extends="main">
+    	<put-attribute name="title" value="상품 수정"/>
+    	<put-attribute name="body" value="/WEB-INF/views/store/storeModify.jsp"/>
+    </definition>
+</tiles-definitions>
+
+
+

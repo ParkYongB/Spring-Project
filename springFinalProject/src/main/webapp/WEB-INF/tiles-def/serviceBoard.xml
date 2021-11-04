@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+    <definition name="serviceBoardInsert" extends="main">
+    	<put-attribute name="title" value="고객센터 글 등록"/>
+    	<put-attribute name="body" value="/WEB-INF/views/qna/serviceBoardInsertForm.jsp"/>
+    </definition>
+    <definition name="serviceBoardList" extends="main">
+    	<put-attribute name="title" value="고객센터 글 목록"/>
+    	<put-attribute name="body" value="/WEB-INF/views/qna/serviceBoardList.jsp"/>
+    </definition>
+    <definition name="serviceBoardDetail" extends="main">
+    	<put-attribute name="title" value="고객센터 글 상세"/>
+    	<put-attribute name="body" value="/WEB-INF/views/qna/serviceBoardDetail.jsp"/>
+    </definition>
+</tiles-definitions>
+
+

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="kr.spring.houseBoard.dao.HouseBoardMapper">
+	<!-- 글 목록 -->
+	<select id="selectHBoardList" parameterType="map" resultType="houseBoardVO">
+		SELECT
+		  *
+		FROM (SELECT
+				a.*,
+				rownum rnum
+			  FROM (SELECT
+						b.house_num,
+						<![CDATA[
+						REPLACE(REPLACE(b.house_title,'<','&lt;'),'>','&gt;') house_title,
+						REPLACE(REPLACE(b.house_area,'<','&lt;'),'>','&gt;') house_area,
+						REPLACE(REPLACE(b.house_type,'<','&lt;'),'>','&gt;') house_type,
+						REPLACE(REPLACE(b.house_style,'<','&lt;'),'>','&gt;') house_style,
+						REPLACE(REPLACE(b.house_space,'<','&lt;'),'>','&gt;') house_space,
+						]]>
+						b.house_hits,
+						TO_CHAR(b.house_reg_date, 'YYYY-MM-DD HH24:MI:SS') house_reg_date,
+						TO_CHAR(b.house_mod_date, 'YYYY-MM-DD HH24:MI:SS') house_mod_date,
+						b.mem_num,
+						b.house_thumbnail,
+						b.thumbnail_filename,
+						m.nickname,
+						m.profile,
+						m.profile_filename
+					FROM house_board b JOIN mem_detail m ON b.mem_num = m.mem_num
+					<where>
+						<if test="sizeOutput != null">
+							b.house_area LIKE '%' || #{sizeOutput} || '%' AND
+						</if>
+
+						<if test="residenceOutput != null">
+							b.house_type LIKE '%' || #{residenceOutput} || '%' AND
+						</if>
+						
+						<if test="styleOutput != null">
+							b.house_style LIKE '%' || #{styleOutput} || '%' AND
+						</if>
+						<if test="spaceOutput != null">
+							b.house_space LIKE '%' || #{spaceOutput} || '%'
+						</if>
+			
+					</where>
+					ORDER BY b.house_num DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	<!-- 내가 쓴 글 목록 -->
+	<select id="selectMyBoardList" parameterType="map" resultType="houseBoardVO">
+		SELECT
+		  *
+		FROM (SELECT
+				a.*,
+				rownum rnum
+			  FROM (SELECT
+						b.house_num,
+						<![CDATA[
+						REPLACE(REPLACE(b.house_title,'<','&lt;'),'>','&gt;') house_title,
+						]]>
+						b.house_hits,
+						b.house_reg_date,
+						b.mem_num,
+						b.house_thumbnail,
+						b.thumbnail_filename,
+						m.nickname,
+						m.profile,
+						m.profile_filename
+			  		FROM house_board b JOIN mem_detail m ON b.mem_num = m.mem_num
+					<where>
+						b.mem_num = #{mem_num}
+					</where>
+					ORDER BY b.house_num DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	<!-- 글의 총 개수 -->
+	<select id="selectRowCount" parameterType="map" resultType="integer">
+		SELECT
+			COUNT(*)
+		FROM house_board b JOIN mem_detail m ON b.mem_num = m.mem_num
+		<where>
+						<if test="sizeOutput != null">
+							b.house_area LIKE '%' || #{sizeOutput} || '%' AND
+						</if>
+
+						<if test="residenceOutput != null">
+							b.house_type LIKE '%' || #{residenceOutput} || '%' AND
+						</if>
+						
+						<if test="styleOutput != null">
+							b.house_style LIKE '%' || #{styleOutput} || '%' AND
+						</if>
+						<if test="spaceOutput != null">
+							b.house_space LIKE '%' || #{spaceOutput} || '%'
+						</if>
+			
+					</where>
+	</select>
+	<!-- 글 수정 -->
+	<update id="updateHBoard" parameterType="houseBoardVO">
+		UPDATE house_board SET
+			<if test="thumbnail_filename != ''">
+			house_thumbnail = #{house_thumbnail},
+			thumbnail_filename = #{thumbnail_filename},
+			</if>
+			house_title = #{house_title},
+			house_area = #{house_area},
+			house_type = #{house_type},
+			house_style = #{house_style},
+			house_space = #{house_space},
+			house_content = #{house_content},
+			house_mod_date = SYSDATE
+		WHERE house_num = #{house_num}
+	</update>
+	<!-- 댓글 목록 -->
+	<select id="selectListComm" parameterType="map" resultType="hCommentVO">
+		SELECT
+		   *
+		FROM (SELECT
+				a.*,
+				rownum rnum
+			  FROM (SELECT
+					   b.comm_num,
+					   b.comm_content,
+					   TO_CHAR(b.comm_reg_date, 'YYYY-MM-DD HH24:MI:SS') comm_reg_date,
+		   			   TO_CHAR(b.comm_mod_date, 'YYYY-MM-DD HH24:MI:SS') comm_mod_date,
+					   b.house_num,
+					   b.mem_num,
+					   m.nickname,
+					   m.profile
+			  		FROM comments b JOIN mem_detail m ON b.mem_num = m.mem_num
+			  		WHERE b.house_num = #{house_num}
+			  		ORDER BY b.comm_num DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	<!-- 댓글 총 개수 -->
+	<select id="selectRowCountComm" parameterType="map" resultType="integer">
+		SELECT
+		   COUNT(*)
+		FROM comments b JOIN mem_detail m ON b.mem_num = m.mem_num
+		WHERE b.house_num = #{house_num}
+	</select>
+	<!-- 검색 결과 리스트 출력 -->
+	<select id="selectAllSearchList" parameterType="map" resultType="houseBoardVO">
+		SELECT
+		  *
+		FROM (SELECT
+				a.*,
+				rownum rnum
+			  FROM (SELECT
+						b.house_num,
+						<![CDATA[
+						REPLACE(REPLACE(b.house_title,'<','&lt;'),'>','&gt;') house_title,
+						REPLACE(REPLACE(b.house_area,'<','&lt;'),'>','&gt;') house_area,
+						REPLACE(REPLACE(b.house_type,'<','&lt;'),'>','&gt;') house_type,
+						REPLACE(REPLACE(b.house_style,'<','&lt;'),'>','&gt;') house_style,
+						REPLACE(REPLACE(b.house_space,'<','&lt;'),'>','&gt;') house_space,
+						]]>
+						b.house_hits,
+						TO_CHAR(b.house_reg_date, 'YY-MM-DD') house_reg_date,
+						b.mem_num,
+						b.house_thumbnail,
+						b.thumbnail_filename,
+						m.nickname,
+						m.profile,
+						m.profile_filename
+					FROM house_board b JOIN mem_detail m ON b.mem_num = m.mem_num
+					<where>
+					   <if test="keyword != '' and keyfield == 1">
+					      b.house_title like '%' || #{keyword} || '%' 
+					      OR b.house_content like '%' || #{keyword} || '%'
+					      OR b.house_type like '%' || #{keyword} || '%'
+					   </if>
+					</where>
+					ORDER BY b.house_num DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	<!-- 검색 결과 총 개수 -->
+	<select id="selectAllSearchRowCount" parameterType="map" resultType="integer">
+		SELECT
+			COUNT(*)
+		FROM house_board b JOIN mem_detail m ON b.mem_num = m.mem_num
+		<where>
+		   <if test="keyword != '' and keyfield == 1">
+		      b.house_title like '%' || #{keyword} || '%' 
+		      OR b.house_content like '%' || #{keyword} || '%'
+		      OR b.house_type like '%' || #{keyword} || '%'
+		   </if>
+		</where>
+	</select>
+</mapper>
+

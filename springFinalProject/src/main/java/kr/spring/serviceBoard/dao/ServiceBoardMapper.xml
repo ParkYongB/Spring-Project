@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="kr.spring.serviceBoard.dao.ServiceBoardMapper">
+<select id="getServiceBoardList" parameterType="map" resultType="serviceBoardVO">
+		SELECT
+		  *
+		FROM (SELECT 
+		        a.*,
+		        rownum rnum
+		      FROM (SELECT 
+		               service_num,
+		              <![CDATA[
+		              REPLACE(REPLACE( service_title,'<','&lt;'),'>','&gt;') service_title,
+		              REPLACE(REPLACE( service_keyword,'<','&lt;'),'>','&gt;') service_keyword,
+		              ]]>
+		               service_nickname,
+		               service_content,
+		               service_email
+		            FROM service_board 
+		            <where>
+		            	<if test="keyword != '' and keyfield == 0">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 1">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 2">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 3">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 4">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 5">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 6">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 7">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 8">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 9">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            	<if test="keyword != '' and keyfield == 10">
+		            		 service_keyword LIKE '%' || #{keyword} || '%'
+		            	</if>
+		            </where>
+		            ORDER BY  service_num DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}  
+		]]>
+	</select>
+
+
+	<select id="selectRowCount" parameterType="map" resultType="integer">
+		SELECT
+		  COUNT(*)
+		FROM service_board
+		<where>
+        	<if test="keyword != '' and keyfield == 0">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 1">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 2">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 3">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 4">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 5">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 6">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 7">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 8">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 9">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        	<if test="keyword != '' and keyfield == 10">
+        		 service_keyword LIKE '%' || #{keyword} || '%'
+        	</if>
+        </where>
+	</select>
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+    <definition name="memberRegister" extends="main">
+    	<put-attribute name="title" value="회원가입"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/memberRegister.jsp"/>
+    </definition>
+	<definition name="memberLogin" extends="main">
+    	<put-attribute name="title" value="로그인"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/login.jsp"/>
+    </definition>
+    <definition name="memberIdSearch" extends="main">
+    	<put-attribute name="title" value="아이디 찾기"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/idSearch.jsp"/>
+    </definition>
+    <definition name="memberIdSearchResult" extends="main">
+    	<put-attribute name="title" value="아이디 찾기 - 결과"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/idSearchResult.jsp"/>
+    </definition>
+    <definition name="memberPasswdSearch" extends="main">
+    	<put-attribute name="title" value="비밀번호 찾기"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/passwdSearch.jsp"/>
+    </definition>
+    <definition name="memberPasswdSearchResult" extends="main">
+    	<put-attribute name="title" value="비밀번호 찾기결과"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/passwdSearchResult.jsp"/>
+    </definition>
+    <definition name="memberView" extends="main">
+    	<put-attribute name="title" value="마이페이지"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/memberView.jsp"/>
+    </definition>
+    <definition name="kakaoRegForm" extends="main">
+    	<put-attribute name="title" value="상세정보 입력"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/kakaoMemberInfoRegist.jsp"/>
+    </definition>
+     <definition name="memberModify" extends="main">
+    	<put-attribute name="title" value="회원정보수정"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/memberModify.jsp"/>
+    </definition>
+     <definition name="myBoardView" extends="main">
+    	<put-attribute name="title" value="내가 쓴 글"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/myBoardView.jsp"/>
+    </definition>
+    <definition name="myBuyList" extends="main">
+    	<put-attribute name="title" value="리뷰"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/myBuyList.jsp"/>
+    </definition>
+    <definition name="memberPasswdUpdate" extends="main">
+    	<put-attribute name="title" value="비밀번호변경"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/memberPasswdUpdate.jsp"/>
+    </definition>
+    <definition name="sellerApplication" extends="main">
+    	<put-attribute name="title" value="판매자 신청"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/sellerApplication.jsp"/>
+    </definition>
+    <definition name="memberAllList" extends="main">
+    	<put-attribute name="title" value="회원 전체 조회"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/memberList.jsp"/>
+    </definition>
+    <definition name="adminMemberUpdate" extends="main">
+    	<put-attribute name="title" value="관리자 - 회원정보수정"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/adminMemberUpdate.jsp"/>
+    </definition>
+    <definition name="sellerApplyList" extends="main">
+    	<put-attribute name="title" value="관리자 - 판매자 신청 내역"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/sellerApplyList.jsp"/>
+    </definition>
+    <definition name="myRecommView" extends="main">
+    	<put-attribute name="title" value="내가 추천한 글 목록"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/myRecommViews.jsp"/>
+    </definition>
+    <definition name="myScrapView" extends="main">
+    	<put-attribute name="title" value="내가 스크랩한 글 목록"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/myScrapViews.jsp"/>
+    </definition>
+    <definition name="myProductView" extends="main">
+    	<put-attribute name="title" value="내가 스크랩한 글 목록"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/myProductViews.jsp"/>
+    </definition>
+    <definition name="myPointView" extends="main">
+    	<put-attribute name="title" value="나의 포인트"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/myPointViews.jsp"/>
+    </definition>
+    <definition name="couponRegister" extends="main">
+    	<put-attribute name="title" value="관리자 - 쿠폰 등록"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/couponRegisterViews.jsp"/>
+    </definition>
+    <definition name="couponAllView" extends="main">
+    	<put-attribute name="title" value="관리자 - 쿠폰 전체조회"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/couponAllViews.jsp"/>
+    </definition>
+    <definition name="couponModify" extends="main">
+    	<put-attribute name="title" value="관리자 - 쿠폰 수정"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/couponModifyView.jsp"/>
+    </definition>
+    <definition name="myCouponView" extends="main">
+    	<put-attribute name="title" value="내 쿠폰 조회"/>
+    	<put-attribute name="body" value="/WEB-INF/views/member/myCouponViews.jsp"/>
+    </definition>
+</tiles-definitions>

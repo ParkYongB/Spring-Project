@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.spring.member.dao.MemberMapper">
+	<select id="selectMemberList" parameterType="map" resultType="memberVO">
+	SELECT 
+	* 
+	FROM(SELECT a.*, 
+				rownum rnum
+         FROM (SELECT 
+         			* 
+               FROM member m LEFT JOIN mem_detail d ON m.mem_num=d.mem_num
+               <where>
+                   <if test="keyword != '' and keyfield == 1">
+                      m.mem_id like '%' || #{keyword} || '%'
+                   </if>
+                   <if test="keyword != '' and keyfield == 2">
+                      d.mem_name like '%' || #{keyword} || '%'
+                   </if>
+                </where>
+               ORDER BY m.mem_num DESC)a)
+	<![CDATA[
+	WHERE rnum >= #{start} AND rnum <= #{end}
+	]]>
+	</select>
+	
+	<select id="selectMemberCount" parameterType="map" resultType="integer">
+		SELECT 
+		 count(*) 
+		FROM member m JOIN mem_detail d ON m.mem_num=d.mem_num
+		 <where>
+            <if test="keyword != '' and keyfield == 1">
+               m.mem_id like '%' || #{keyword} || '%'
+            </if>
+            <if test="keyword != '' and keyfield == 2">
+               d.mem_name like '%' || #{keyword} || '%'
+            </if>
+         </where>
+	</select>
+	
+	<select id="selectMemberBuisList" parameterType="map" resultType="memberBuisVO">
+		SELECT 
+		*
+		FROM(SELECT a.*, 
+					rownum rnum
+		     FROM (SELECT 
+		     			d.BUIS_COUNT,
+                        d.BUIS_NUM,
+                        d.MEM_NUM,
+                        d.CEO_NAME,
+                        d.BUIS_NAME,
+                        TO_CHAR(d.OPENING_DATE,'YYYY-MM-DD') OPENING_DATE,
+                        d.BUIS_ITEM,
+                        d.BUIS_ZIPCODE,
+                        d.BUIS_ADDRESS1,
+                        d.BUIS_ADDRESS2,
+                        d.APPLICATION_STATE,                
+                        m.mem_id,
+                        m.mem_auth
+		           FROM buis_detail d JOIN member m ON d.mem_num=m.mem_num
+		           <where>
+                   <if test="keyword != '' and keyfield == 1">
+                      d.buis_name like '%' || #{keyword} || '%'
+                   </if>
+                   <if test="keyword != '' and keyfield == 2">
+                      d.ceo_name like '%' || #{keyword} || '%'
+                   </if>
+                   	  AND application_state = 1
+                	</where>
+		           ORDER BY d.buis_count)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	
+	<select id="selectMemberBuisCount" parameterType="map" resultType="integer">
+		SELECT
+		 COUNT(*) 
+		FROM buis_detail d JOIN member m ON d.mem_num=m.mem_num 
+		<where>
+         <if test="keyword != '' and keyfield == 1">
+            d.buis_name like '%' || #{keyword} || '%'
+         </if>
+         <if test="keyword != '' and keyfield == 2">
+            d.ceo_name like '%' || #{keyword} || '%'
+         </if>
+         	AND application_state = 1
+      </where>   
+	</select>
+	
+	<!-- 내가 추천 누른 글 번호 구하기 -->
+	<select id="myRecommBoardNum" parameterType="map" resultType="houseBoardVO">
+		SELECT * FROM ( SELECT a.*, rownum rnum
+                FROM ( SELECT 
+                        house_num
+                        FROM recommend 
+                        WHERE mem_num=#{mem_num}
+                        ORDER BY house_num DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	
+	<!-- 내가 추천 누른 글의 게시글 수 구하기 -->
+	<select id="myRecommBoardCount" parameterType="map" resultType="integer">	
+		SELECT count(*) FROM ( SELECT a.*, rownum rnum
+	                FROM ( SELECT 
+	                        house_num
+	                        FROM recommend 
+	                        WHERE mem_num=#{mem_num}
+	                        ORDER BY house_num DESC)a)
+	</select>
+	
+	<!-- 내가 추천 및 북마크 누른 게시글 구하기 -->
+	<select id="myRecommScrapBoardList" parameterType="map" resultType="houseBoardVO">
+		SELECT * 
+		FROM ( SELECT a.*, rownum rnum
+		        FROM ( SELECT
+		                   b.house_num, 
+		                   b.house_title, 
+		                   b.house_hits,
+		                   b.house_reg_date,
+		                   b.mem_num,
+		                   b.thumbnail_filename,
+		                   b.house_thumbnail,
+		                   m.nickname,
+		                   m.profile_filename,
+                  		   m.profile
+		                 FROM house_board b JOIN mem_detail m ON b.mem_num = m.mem_num
+		        WHERE b.house_num = #{house_num}
+		        ORDER BY b.house_num DESC)a)
+	</select>
+	
+	<!-- 내가 누른 북마크 글 번호 구하기 -->
+	<select id="myScrapBooksNum" parameterType="map" resultType="houseBoardVO">
+		SELECT * FROM ( SELECT a.*, rownum rnum
+                FROM ( SELECT 
+                        house_num
+                        FROM scrapbook 
+                        WHERE mem_num=#{mem_num}
+                        ORDER BY house_num DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	
+	<!-- 내가 누른 북마크 글의 게시글 수 구하기 -->
+	<select id="myScrapBookBoardCounts" parameterType="map" resultType="integer">
+		SELECT count(*) FROM ( SELECT a.*, rownum rnum
+	                FROM ( SELECT 
+	                        house_num
+	                        FROM scrapbook 
+	                        WHERE mem_num=#{mem_num}
+	                        ORDER BY house_num DESC)a)
+	</select>
+	
+	
+	<!-- 판매자 - 내가 등록한 상품 리스트 출력 -->
+	<select id="myProductList" parameterType="map" resultType="storeVO">
+		SELECT *
+  		FROM (SELECT
+  				a.*,
+  				rownum rnum
+  			  FROM (SELECT
+  			  		  p.prod_num,
+  			  		  <![CDATA[
+  			  		  REPLACE(REPLACE(p.prod_name, '<', '&lt;'), '>', '&gt;') prod_name,
+  			  		  ]]>
+  			  		  p.thumbnail_filename,
+  			  		  p.thumbnail_img,
+  			  		  p.prod_price,
+  			  		  p.prod_keyword,
+  			  		  p.prod_cate,
+                      d.buis_name,
+                      d.mem_num
+  			  FROM product p JOIN member m ON p.mem_num = m.mem_num JOIN buis_detail d ON d.mem_num = m.mem_num
+			  WHERE	p.prod_name LIKE '%%'
+              AND d.mem_num = #{mem_num}
+  			  ORDER BY p.prod_num DESC) a)
+  		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	
+	<!-- 관리자 페이지 - 전체 쿠폰 목록 구하기 -->
+	<select id="selectCouponAllList" parameterType="map" resultType="memberVO">
+	 	SELECT *
+	 	FROM (SELECT
+	 			a.*,
+	 			rownum rnum
+	 		  FROM (SELECT
+	 		  		coupondetail_num,
+                    coupon_name,
+                    coupon_content,
+                    discount_price
+                    FROM coupon_detail
+                    ORDER BY coupondetail_num DESC)a)
+        <![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	
+	<!-- 회원 내가 보유한 쿠폰 전체 출력 -->
+	<select id="selectGetCouponList" parameterType="map" resultType="memberVO">
+	 	SELECT *
+	 	FROM (SELECT
+	 			a.*,
+	 			rownum rnum
+	 		  FROM (SELECT
+	 		  		cd.coupondetail_num,
+                    cd.coupon_name,
+                    cd.coupon_content,
+                    cd.discount_price,
+                    c.coupon_num,
+                    c.mem_num
+                    FROM coupon_detail cd JOIN coupon c ON cd.coupondetail_num = c.coupondetail_num
+                    WHERE c.mem_num = #{mem_num}
+                    ORDER BY coupondetail_num DESC)a)
+        <![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+</mapper>
