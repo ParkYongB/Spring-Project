@@ -1,39 +1,318 @@
--- 21.10.12 16:30 회원 테이블 카카오 닉네임 추가
-alter table member add kakao_nickname varchar2(30);
-
--- 21.10.12 17:00 회원테이블 제거 및 회원 상세테이블로 이동
-alter table member drop column kakao_nickname;
-alter table mem_detail add nickname varchar2(30);
-
--- 21.10.13 00 회원테이블 비밀번호 KEY, 비밀번호 답 삭제
-alter table mem_detail drop column passwdkey;
-alter table mem_detail drop column passwdq_uestion;
-
--- 21.10.13 01:00 카테고리 테이블 추가 및 상품 테이블 카테고리 컬럼 추가
-alter table product add prod_cate varchar2(50) not null;
-create table category (
-    prod_cate varchar2(50) not null,
-    cate_name varchar2(50) not null
-);
-
--- 21.10.13 16:55 회원 팔로우 테이블 추가
-CREATE TABLE follow
+-- member Table Create SQL
+CREATE TABLE member
 (
-    follow_num          NUMBER    NOT NULL, 
-    follow_mem_num      NUMBER    NOT NULL, 
-    follower_mem_num    NUMBER    NOT NULL, 
-    CONSTRAINT PK_follow_num PRIMARY KEY (follow_num)
+    mem_num     NUMBER          NOT NULL, 
+    mem_id      VARCHAR2(20)    NOT NULL, 
+    mem_auth    NUMBER(1, 0)    DEFAULT 2 NOT NULL, 
+    CONSTRAINT PK_mem_num PRIMARY KEY (mem_num)
 );
-/
 
-CREATE SEQUENCE follow_SEQ
-START WITH 1
-INCREMENT BY 1;
-/
+CREATE SEQUENCE member_SEQ START WITH 1 INCREMENT BY 1;
 
---21.10.14 12:07 service_board 테이블 drop 후 create 해주세요
-DROP TABLE service_board;
+CREATE UNIQUE INDEX UQ_member_1 ON member(mem_id);
 
+-- event Table Create SQL
+CREATE TABLE event
+(
+    event_num         NUMBER           NOT NULL, 
+    event_title       VARCHAR2(150)    NOT NULL, 
+    event_content     CLOB             NOT NULL, 
+    event_type        VARCHAR2(100)    NULL, 
+    event_hits        INT              DEFAULT 0 NULL, 
+    event_reg_date    DATE             DEFAULT SYSDATE NULL, 
+    event_modi        DATE             DEFAULT SYSDATE NULL, 
+    event_photo       BLOB             NULL, 
+    event_filename    VARCHAR2(100)    NULL, 
+    mem_num           NUMBER           NOT NULL, 
+    event_day         VARCHAR2(50)     NULL, 
+    CONSTRAINT PK_event_num PRIMARY KEY (event_num)
+);
+
+CREATE SEQUENCE event_SEQ START WITH 1 INCREMENT BY 1;
+
+ALTER TABLE event
+    ADD CONSTRAINT FK_event_mem_num_member_mem_nu FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+-- house_board Table Create SQL
+CREATE TABLE house_board
+(
+    house_num             NUMBER           NOT NULL, 
+    house_type            VARCHAR2(30)     NOT NULL, 
+    house_space           VARCHAR2(30)     NULL, 
+    house_area            VARCHAR2(30)     NOT NULL, 
+    house_style           VARCHAR2(30)     NULL, 
+    house_title           VARCHAR2(150)    NOT NULL, 
+    house_content         CLOB             NOT NULL, 
+    house_hits            INT              DEFAULT 0 NULL, 
+    house_reg_date        DATE             DEFAULT SYSDATE NULL, 
+    house_mod_date        DATE             DEFAULT SYSDATE NULL, 
+    house_thumbnail       BLOB             NULL, 
+    thumbnail_filename    VARCHAR2(100)    NULL, 
+    house_img             BLOB             NULL, 
+    upload_filename       VARCHAR2(300)    NULL, 
+    mem_num               NUMBER           NOT NULL, 
+    CONSTRAINT PK_house_num PRIMARY KEY (house_num)
+);
+
+CREATE SEQUENCE house_board_SEQ START WITH 1 INCREMENT BY 1;
+
+ALTER TABLE house_board
+    ADD CONSTRAINT FK_house_board_mem_num_member_ FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+-- product Table Create SQL
+CREATE TABLE product
+(
+    prod_num              NUMBER           NOT NULL, 
+    prod_name             VARCHAR2(150)    NOT NULL, 
+    prod_price            NUMBER(14, 0)    NOT NULL, 
+    delive_price          NUMBER(10,0)     DEFAULT 0 NOT NULL, 
+    delive_type           VARCHAR2(30)     NOT NULL, 
+    selec_product         VARCHAR2(150)    NOT NULL, 
+    prod_option1          VARCHAR2(150)    NULL, 
+    prod_option2          VARCHAR2(150)    NULL, 
+    prod_content          CLOB             NOT NULL, 
+    prod_img              BLOB             NULL, 
+    prod_filename         VARCHAR2(100)    NULL, 
+    thumbnail_img         BLOB             NULL, 
+    thumbnail_filename    VARCHAR2(300)    NULL, 
+    prod_quan             NUMBER(5, 0)     DEFAULT 1 NOT NULL, 
+    add_product           VARCHAR2(150)    NULL, 
+    prod_reg_date         DATE             DEFAULT SYSDATE NOT NULL, 
+    prod_keyword          VARCHAR2(24)     NULL, 
+    mem_num               NUMBER           NOT NULL, 
+    prod_cate             VARCHAR2(50)     NOT NULL, 
+    prod_option3          VARCHAR2(150)    NULL, 
+    prod_option4          VARCHAR2(150)    NULL, 
+    prod_option5          VARCHAR2(150)    NULL, 
+    prod_option6          VARCHAR2(150)    NULL, 
+    prod_option7          VARCHAR2(150)    NULL, 
+    prod_option8          VARCHAR2(150)    NULL, 
+    prod_option9          VARCHAR2(150)    NULL, 
+    prod_option10         VARCHAR2(150)    NULL, 
+    CONSTRAINT PK_prod_num PRIMARY KEY (prod_num)
+);
+
+CREATE SEQUENCE product_SEQ START WITH 1 INCREMENT BY 1;
+
+ALTER TABLE product
+    ADD CONSTRAINT FK_product_mem_num_member_mem_ FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+-- coupon_detail Table Create SQL
+CREATE TABLE coupon_detail
+(
+    coupondetail_num    NUMBER           NOT NULL, 
+    coupon_name         VARCHAR2(300)    NOT NULL, 
+    coupon_content      VARCHAR2(600)    NOT NULL, 
+    discount_price      NUMBER(14, 0)    NOT NULL, 
+    CONSTRAINT PK_coupon_num PRIMARY KEY (coupondetail_num)
+);
+
+CREATE SEQUENCE coupon_detail_SEQ START WITH 1 INCREMENT BY 1;
+
+-- mem_detail Table Create SQL
+CREATE TABLE mem_detail
+(
+    mem_num             NUMBER           NOT NULL, 
+    mem_name            VARCHAR2(25)     NOT NULL, 
+    passwd              VARCHAR2(65)     NOT NULL, 
+    nickname            VARCHAR2(30)     NULL, 
+    email               VARCHAR2(50)     NOT NULL, 
+    phone               VARCHAR2(20)     NOT NULL, 
+    zipcode             VARCHAR2(20)     NOT NULL, 
+    address1            VARCHAR2(90)     NOT NULL, 
+    address2            VARCHAR2(90)     NOT NULL, 
+    reg_date            DATE             DEFAULT SYSDATE NULL, 
+    profile             BLOB             NULL, 
+    profile_filename    VARCHAR2(100)    NULL, 
+    point               NUMBER(12,0)     DEFAULT 0 NOT NULL, 
+    CONSTRAINT PK_mem_detail PRIMARY KEY (mem_num)
+);
+
+ALTER TABLE mem_detail
+    ADD CONSTRAINT FK_mem_detail_mem_num_member_m FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+-- coupon Table Create SQL
+CREATE TABLE coupon
+(
+    coupon_num          NUMBER    NOT NULL, 
+    mem_num             NUMBER    NULL, 
+    coupondetail_num    NUMBER    NULL, 
+     PRIMARY KEY (coupon_num)
+);
+
+CREATE SEQUENCE coupon_SEQ START WITH 1 INCREMENT BY 1;
+
+ALTER TABLE coupon
+    ADD CONSTRAINT FK_coupon_mem_num_mem_detail_m FOREIGN KEY (mem_num)
+        REFERENCES mem_detail (mem_num);
+
+ALTER TABLE coupon
+    ADD CONSTRAINT FK_coupon_coupondetail_num_cou FOREIGN KEY (coupondetail_num)
+        REFERENCES coupon_detail (coupondetail_num);
+
+-- qna_list Table Create SQL
+CREATE TABLE qna_list
+(
+    qna_num         INT              NOT NULL, 
+    qna_category    VARCHAR2(30)     NULL, 
+    qna_content     VARCHAR2(300)    NULL, 
+    qna_reply       VARCHAR2(300)    NULL, 
+    CONSTRAINT PK_qna_num PRIMARY KEY (qna_num)
+);
+
+CREATE SEQUENCE qna_list_SEQ START WITH 1 INCREMENT BY 1;
+
+-- cart Table Create SQL
+CREATE TABLE cart
+(
+    cart_num     NUMBER          NOT NULL, 
+    prod_num     NUMBER          NOT NULL, 
+    mem_num      NUMBER          NOT NULL, 
+    cart_quan    NUMBER(5, 0)    DEFAULT 1 NOT NULL, 
+    CONSTRAINT PK_cart_num PRIMARY KEY (cart_num, prod_num)
+);
+
+CREATE SEQUENCE cart_SEQ START WITH 1 INCREMENT BY 1;
+
+ALTER TABLE cart
+    ADD CONSTRAINT FK_cart_prod_num_product_prod_ FOREIGN KEY (prod_num)
+        REFERENCES product (prod_num);
+
+ALTER TABLE cart
+    ADD CONSTRAINT FK_cart_mem_num_member_mem_num FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+-- product_review Table Create SQL
+CREATE TABLE product_review
+(
+    rev_num         NUMBER           NOT NULL, 
+    rev_content     CLOB             NOT NULL, 
+    rev_grade       NUMBER(1, 0)     DEFAULT 1 NOT NULL, 
+    rev_reg_date    DATE             DEFAULT SYSDATE NOT NULL, 
+    rev_img         BLOB             NULL, 
+    rev_filename    VARCHAR2(100)    NULL, 
+    prod_num        NUMBER           NOT NULL, 
+    mem_num         NUMBER           NOT NULL, 
+    CONSTRAINT PK_rev_num PRIMARY KEY (rev_num)
+);
+
+CREATE SEQUENCE product_review_SEQ START WITH 1 INCREMENT BY 1;
+
+ALTER TABLE product_review
+    ADD CONSTRAINT FK_product_review_prod_num_pro FOREIGN KEY (prod_num)
+        REFERENCES product (prod_num);
+
+ALTER TABLE product_review
+    ADD CONSTRAINT FK_product_review_mem_num_memb FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+-- orders Table Create SQL
+CREATE TABLE orders
+(
+    order_num         NUMBER           NOT NULL, 
+    order_date        DATE             DEFAULT SYSDATE NOT NULL, 
+    order_zipcode     VARCHAR2(20)     NOT NULL, 
+    order_address1    VARCHAR2(90)     NOT NULL, 
+    order_address2    VARCHAR2(90)     NOT NULL, 
+    receiver_name     VARCHAR2(25)     NOT NULL, 
+    receiver_phone    VARCHAR2(20)     NOT NULL, 
+    receiver_email    VARCHAR2(50)     NOT NULL, 
+    mem_num           NUMBER           NULL, 
+    prod_num          NUMBER           NULL, 
+    pay_quan          NUMBER(5, 0)     NULL, 
+    pay_price         NUMBER(14, 0)    NULL, 
+    coupon_num        NUMBER           NULL, 
+    point             NUMBER(12, 0)    NULL, 
+    buis_name         VARCHAR2(70)     NULL, 
+    CONSTRAINT PK_order_num PRIMARY KEY (order_num)
+);
+
+CREATE SEQUENCE orders_SEQ START WITH 1 INCREMENT BY 1;
+
+-- recommend Table Create SQL
+CREATE TABLE recommend
+(
+    house_num    NUMBER    NULL, 
+    mem_num      NUMBER    NOT NULL
+);
+
+ALTER TABLE recommend
+    ADD CONSTRAINT FK_recommend_house_num_house_b FOREIGN KEY (house_num)
+        REFERENCES house_board (house_num);
+
+ALTER TABLE recommend
+    ADD CONSTRAINT FK_recommend_mem_num_member_me FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+-- scrapbook Table Create SQL
+CREATE TABLE scrapbook
+(
+    scrap_num    NUMBER    NOT NULL, 
+    house_num    NUMBER    NULL, 
+    mem_num      NUMBER    NOT NULL, 
+    CONSTRAINT PK_scrap_num PRIMARY KEY (scrap_num)
+);
+
+CREATE SEQUENCE scrapbook_SEQ START WITH 1 INCREMENT BY 1;
+
+ALTER TABLE scrapbook
+    ADD CONSTRAINT FK_scrapbook_house_num_house_b FOREIGN KEY (house_num)
+        REFERENCES house_board (house_num);
+
+ALTER TABLE scrapbook
+    ADD CONSTRAINT FK_scrapbook_mem_num_member_me FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+-- comments Table Create SQL
+CREATE TABLE comments
+(
+    comm_num         NUMBER           NOT NULL, 
+    comm_reg_date    DATE             DEFAULT SYSDATE NULL, 
+    comm_modi        DATE             DEFAULT SYSDATE NULL, 
+    comm_content     VARCHAR2(900)    NOT NULL, 
+    mem_num          NUMBER           NOT NULL, 
+    house_num        NUMBER           NULL, 
+    event_num        NUMBER           NULL, 
+    CONSTRAINT PK_comments PRIMARY KEY (comm_num)
+);
+
+CREATE SEQUENCE comments_SEQ START WITH 1 INCREMENT BY 1;
+
+ALTER TABLE comments
+    ADD CONSTRAINT FK_comments_mem_num_member_mem FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+ALTER TABLE comments
+    ADD CONSTRAINT FK_comments_house_num_house_bo FOREIGN KEY (house_num)
+        REFERENCES house_board (house_num);
+
+ALTER TABLE comments
+    ADD CONSTRAINT FK_comments_event_num_event_ev FOREIGN KEY (event_num)
+        REFERENCES event (event_num);
+
+-- notice Table Create SQL
+CREATE TABLE notice
+(
+    notice_num         NUMBER           NOT NULL, 
+    notice_title       VARCHAR2(150)    NOT NULL, 
+    notice_content     CLOB             NOT NULL, 
+    notice_reg_date    DATE             DEFAULT SYSDATE NULL, 
+    notice_hits        INT              DEFAULT 0 NULL, 
+    mem_num            NUMBER           NOT NULL, 
+    CONSTRAINT PK_notice_num PRIMARY KEY (notice_num)
+);
+
+CREATE SEQUENCE notice_SEQ START WITH 1 INCREMENT BY 1;
+
+ALTER TABLE notice
+    ADD CONSTRAINT FK_notice_mem_num_member_mem_n FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);
+
+-- service_board Table Create SQL
 CREATE TABLE service_board
 (
     service_num         NUMBER           NOT NULL, 
@@ -48,65 +327,9 @@ CREATE TABLE service_board
     CONSTRAINT PK_service_num PRIMARY KEY (service_num)
 );
 
--- 21.10.14 12:20 집들이게시판 테이블 컬럼명 변경 및 컬럼 제거
-ALTER TABLE house_board RENAME COLUMN house_modi TO house_mod_date;
-ALTER TABLE house_board DROP COLUMN house_color;
+CREATE SEQUENCE service_board_SEQ START WITH 1 INCREMENT BY 1;
 
--- 21.10.15 16:00 집들이게시판 테이블 컬럼 제거
-ALTER TABLE house_board DROP COLUMN house_img;
-ALTER TABLE house_board DROP COLUMN upload_filename;
-
--- 21.10.16 23:30 상품 테이블 칼럼 변경
-ALTER TABLE product MODIFY selec_product null;
-ALTER TABLE product add prod_option3 VARCHAR2(150) null;
-ALTER TABLE product add prod_option4 VARCHAR2(150) null;
-ALTER TABLE product add prod_option5 VARCHAR2(150) null;
-ALTER TABLE product add prod_option6 VARCHAR2(150) null;
-ALTER TABLE product add prod_option7 VARCHAR2(150) null;
-ALTER TABLE product add prod_option8 VARCHAR2(150) null;
-ALTER TABLE product add prod_option9 VARCHAR2(150) null;
-ALTER TABLE product add prod_option10 VARCHAR2(150) null;
-
--- 21.10.17 02:50 댓글 테이블 컬럼명 변경
-ALTER TABLE comments RENAME COLUMN comm_modi TO comm_mod_date;
-
--- 21.10.17 17:30 상품 테이블 칼럼 이름 오류 수정
-ALTER TABLE product RENAME COLUMN product_option3 TO prod_option3;
-ALTER TABLE product RENAME COLUMN product_option4 TO prod_option4;
-ALTER TABLE product RENAME COLUMN product_option5 TO prod_option5;
-ALTER TABLE product RENAME COLUMN product_option6 TO prod_option6;
-ALTER TABLE product RENAME COLUMN product_option7 TO prod_option7;
-ALTER TABLE product RENAME COLUMN product_option8 TO prod_option8;
-ALTER TABLE product RENAME COLUMN product_option9 TO prod_option9;
-ALTER TABLE product RENAME COLUMN product_option10 TO prod_option10;
-
-
--- 21.10.17 23:30 결제 테이블 수정
-ALTER TABLE orders ADD prod_num number;
-ALTER TABLE orders ADD pay_quan number(5, 0);
-ALTER TABLE orders ADD pay_price number(14, 0);
-ALTER TABLE orders ADD coupon_num number null;
-ALTER TABLE orders ADD point number(12,0) null;
-ALTER TABLE orders ADD buis_name varchar2(70);
-
--- 21.10.18. 01:00 판매자 테이블 컬럼 변경 및 고객센터 외래키 제약조건 삭제
-ALTER TABLE service_board DROP CONSTRAINT FK_SERVICE_BOARD_MEM_NUM_MEMBE;
-
-ALTER TABLE buis_detail DROP COLUMN BUIS_EMAIL;
-ALTER TABLE buis_detail DROP COLUMN BUIS_PROFILE;
-ALTER TABLE buis_detail DROP COLUMN PROFILE_FILENAME;
-ALTER TABLE buis_detail DROP COLUMN BUIS_REG_DATE;
-ALTER TABLE buis_detail DROP COLUMN BUIS_PASSWD;
-ALTER TABLE buis_detail add application_state VARCHAR2(10) DEFAULT '1' not null;
-ALTER TABLE buis_detail MODIFY BUIS_NUM VARCHAR2(40);
-
--- 21.10.18 20:20 댓글 테이블 데이터 크기 및 기본값 변경
-ALTER TABLE comments MODIFY comm_content VARCHAR2(900);
-ALTER TABLE comments MODIFY comm_reg_date DATE DEFAULT sysdate;
-ALTER TABLE comments MODIFY comm_mod_date DATE DEFAULT sysdate;
-
--- 21.10.19 03 30 사업자 테이블 삭제 후 재생성 (순서대로 실행)
-DROP TABLE BUIS_DETAIL;
+-- buis_detail Table Create SQL
 CREATE TABLE buis_detail
 (
     buis_count           NUMBER          NOT NULL, 
@@ -125,42 +348,6 @@ CREATE TABLE buis_detail
 
 CREATE SEQUENCE buis_detail_SEQ START WITH 1 INCREMENT BY 1;
 
--- 21.10.20 16:40 집들이 테이블 컬럼 제거
-ALTER TABLE house_board DROP COLUMN house_recom;
-
---21.10.21 1:10 이벤트 게시판 컬럼 추가
-alter table event add event_day varchar2(50);
-
--- 21.10.21.02.50 쿠폰테이블 삭제 및 분할	(순서대로 실행)
-DROP TABLE coupon;
-
-CREATE TABLE coupon_detail
-(
-    coupondetail_num    NUMBER           NOT NULL, 
-    coupon_name         VARCHAR2(300)    NOT NULL, 
-    coupon_content      VARCHAR2(600)    NOT NULL, 
-    discount_price      NUMBER(14, 0)    NOT NULL, 
-    CONSTRAINT PK_coupon_num PRIMARY KEY (coupondetail_num)
-);
-
-CREATE SEQUENCE coupon_detail_SEQ
-START WITH 1
-INCREMENT BY 1;
-
-CREATE TABLE coupon
-(
-    coupon_num          NUMBER    NOT NULL, 
-    mem_num             NUMBER    NULL, 
-    coupondetail_num    NUMBER    NULL, 
-     PRIMARY KEY (coupon_num)
-);
-
--- 21.10.21 12:00 카테고리 테이블 제거
-drop table category;
-
--- 21.10.21 17:00 팔로우 테이블 제거
-DROP TABLE follow;
-
--- 21.10.22 15:00 주문 테이블 외래키 제거
-alter table orders drop constraint FK_ORDERS_MEM_NUM_MEMBER_MEM_N;
-
+ALTER TABLE buis_detail
+    ADD CONSTRAINT FK_buis_detail_mem_num_member_ FOREIGN KEY (mem_num)
+        REFERENCES member (mem_num);

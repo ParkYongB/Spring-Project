@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="kr.spring.order.dao.OrderMapper">  
+  	<select id = "selectNonList" parameterType = "map" resultType = "orderVO">
+  		SELECT
+  		   *
+  		FROM (SELECT
+  				a.*,
+  				rownum rnum
+  			  FROM (SELECT
+  			  		  o.order_num,
+  			  		  o.order_date,
+  			  		  <![CDATA[
+  			  		  REPLACE(REPLACE(p.prod_name, '<', '&lt;'), '>', '&gt;') prod_name,
+  			  		  ]]>
+  			  		  o.order_address1,
+  			  		  o.order_address2,
+  			  		  o.pay_quan,
+  			  		  o.pay_price,
+  			  		  o.receiver_name,
+  			  		  o.receiver_phone,
+  			  		  p.prod_num
+  			  FROM product p JOIN orders o ON p.prod_num = o.prod_num
+  			  ORDER BY o.order_num DESC) a)
+  		<![CDATA[
+  		WHERE rnum >= #{start} AND rnum <= #{end} AND receiver_phone = #{receiver_phone}
+  		]]>
+  	</select>
+  	
+  	<select id = "selectNonRowCount" parameterType = "map" resultType = "integer">
+  		SELECT
+  			COUNT(*)
+  		FROM orders o JOIN product p ON p.prod_num = o.prod_num
+  		<![CDATA[
+  		WHERE receiver_phone = #{receiver_phone}
+  		]]>
+  	</select>
+  	
+  	<select id = "selectList" parameterType = "map" resultType = "orderVO">
+  		SELECT
+  		   *
+  		FROM (SELECT
+  				a.*,
+  				rownum rnum
+  			  FROM (SELECT
+  			  		  o.order_num,
+  			  		  o.order_date,
+  			  		  <![CDATA[
+  			  		  REPLACE(REPLACE(p.prod_name, '<', '&lt;'), '>', '&gt;') prod_name,
+  			  		  ]]>
+  			  		  o.order_address1,
+  			  		  o.order_address2,
+  			  		  o.pay_quan,
+  			  		  o.pay_price,
+  			  		  o.receiver_name,
+  			  		  o.receiver_phone,
+  			  		  p.prod_num
+  			  FROM product p JOIN orders o ON p.prod_num = o.prod_num
+  			  <![CDATA[
+  			  WHERE o.mem_num = #{mem_num}
+  			  ]]>
+  			  ORDER BY o.order_num DESC) a)
+  		<![CDATA[
+  		WHERE rnum >= #{start} AND rnum <= #{end}
+  		]]>
+  	</select>
+  	
+  	<select id = "selectRowCount" parameterType = "map" resultType = "integer">
+  		SELECT
+  			COUNT(*)
+  		FROM orders o JOIN product p ON p.prod_num = o.prod_num
+  		<![CDATA[
+  		WHERE o.mem_num = #{mem_num}
+  		]]>
+  	</select>
+</mapper>

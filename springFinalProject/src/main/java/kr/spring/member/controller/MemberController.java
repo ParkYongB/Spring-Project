@@ -5,19 +5,36 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
 import javax.mail.internet.MimeMessage;
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpUpgradeHandler;
+import javax.servlet.http.Part;
 import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
@@ -48,6 +65,7 @@ import kr.spring.houseBoard.vo.HMarkVO;
 import kr.spring.houseBoard.vo.HouseBoardVO;
 import kr.spring.member.dao.MemberMapper;
 import kr.spring.member.service.MemberService;
+import kr.spring.member.service.MemberSha256;
 import kr.spring.member.vo.MemberBuisVO;
 import kr.spring.member.vo.MemberVO;
 import kr.spring.serviceBoard.service.ServiceBoardService;
@@ -132,7 +150,7 @@ public class MemberController {
 	
 	// 회원가입 - 회원가입 폼 처리
 	@PostMapping("/member/registerUser.do")
-	public String submit(@Valid MemberVO memberVO, BindingResult result) {
+	public String submit(@Valid MemberVO memberVO, BindingResult result) throws Exception {
 		
 		// 유효성 검사 결과 오류가 있으면 폼 호출
 		if(result.hasErrors()) {
@@ -141,6 +159,13 @@ public class MemberController {
 		}
 		
 		logger.debug("<<회원정보>> : " + memberVO);
+		
+		// 비밀번호 암호화 (SHA-256)
+		String encryPassword = MemberSha256.encrypt(memberVO.getPasswd());
+		memberVO.setPasswd(encryPassword);
+		
+		logger.debug("<<비밀번호>> : " + memberVO.getPasswd());
+		
 		// 회원가입
 		memberService.insertMember(memberVO);
 		return "redirect:/main/main.do";
@@ -320,7 +345,7 @@ public class MemberController {
 	//로그인 - 로그인 데이터 처리
 	@PostMapping("/member/login.do")
 	public String submitLogin(@Valid MemberVO memberVO,BindingResult result, 
-			                  HttpSession session) {
+			                  HttpSession session) throws Exception {
 			
 		logger.debug("<<회원 로그인>> : " + memberVO);
 			
@@ -334,13 +359,24 @@ public class MemberController {
 		try {
 			// DB에 저장된 정보 담아서 객체 생성
 			MemberVO member = memberService.selectCheckMember(memberVO.getMem_id());	
+			
 			// 입력 아이디 넣어서 생성 존재하지 않다면 null
 			boolean check = false;
-				
-			if(member!=null) {//아이디 일치
+			
+			// 관리자 초기화 값일 경우 암호화를 수행하지 않음
+			if(member.getPasswd().equals("123456789a")) {
+				check = member.isCheckedPassword(memberVO.getPasswd());
+			}
+			
+			// 비밀번호 암호화 (SHA-256)
+			String passwd = memberVO.getPasswd();			
+			memberVO.setPasswd(MemberSha256.encrypt(passwd));
+			
+			if(member!=null && !member.getPasswd().equals("123456789a")) {//아이디 일치
 				//비밀번호 일치 여부 체크               사용자가 입력한 비밀번호
 				check = member.isCheckedPassword(memberVO.getPasswd());
 			}
+			
 			if(check) {
 				//인증 성공, 로그인 처리
 				session.setAttribute("user_num", member.getMem_num());
@@ -468,7 +504,8 @@ public class MemberController {
 		        mav.setViewName("memberPasswdSearchResult");
 		        
 		        // 회원 비밀번호 변경
-		        member.setPasswd(emailCheckCode); 		// 생성한 난수 코드 비밀번호 지정
+		        // 					비밀번호 암호화
+		        member.setPasswd(MemberSha256.encrypt(emailCheckCode)); 		// 생성한 난수 코드 비밀번호 지정
 				memberService.updateMemberPasswd(member);
 		        
 				return mav;
@@ -699,7 +736,7 @@ public class MemberController {
 	
 	// 회원정보 수정 - 비밀번호 변경 처리
 	@PostMapping("/member/memberPasswdUpdate.do")
-	public String submitUpdatePasswd(@Valid MemberVO memberVO, BindingResult result, HttpSession session) {
+	public String submitUpdatePasswd(@Valid MemberVO memberVO, BindingResult result, HttpSession session) throws Exception {
 		
 		logger.debug("<<비밀번호수정>> : " + memberVO);
 		
@@ -712,17 +749,40 @@ public class MemberController {
 		Integer user_num = (Integer)session.getAttribute("user_num");
 		MemberVO member = memberService.selectMember(user_num); // 한 건의 레코드 구하기
 		
-		// 폼에서 전송한 현재 비밀번호와 DB에서 받아온 현재 비밀번호 일치 여부 체크
-		// DB에서 읽어온 비밀번호				사용자가 입력한 비밀번호
-		if(!member.getPasswd().equals(memberVO.getNow_passwd())) {
-			// 비밀번호 불일치
-			result.rejectValue("now_passwd", "invalidPassword");
-			return memberPasswdUpdateForm();
+		// 관리자 초기화 값은 암호화가 안 되어 있기 때문에 조건문 작성
+		if(member.getPasswd().equals("123456789a")) {
+			memberVO.setMem_num(user_num);
+			
+			// 변경할 비밀번호 암호화
+			String encryPassword = MemberSha256.encrypt(memberVO.getPasswd());
+			memberVO.setPasswd(encryPassword);
+
+			// 비밀번호 변경
+			memberService.updateMemberPasswd(memberVO);
+		}else {
+			// 입력한 현재 비밀번호 암호화
+			String now_passwd = memberVO.getNow_passwd();	
+			memberVO.setNow_passwd(MemberSha256.encrypt(now_passwd));
+			
+			// 폼에서 전송한 현재 비밀번호와 DB에서 받아온 현재 비밀번호 일치 여부 체크
+			// DB에서 읽어온 비밀번호			사용자가 입력한 비밀번호
+			if(!member.getPasswd().equals(memberVO.getNow_passwd())) {
+				logger.debug("디비 비밀번호 : " + member.getPasswd());
+				
+				// 비밀번호 불일치
+				result.rejectValue("now_passwd", "invalidPassword");
+				return memberPasswdUpdateForm();
+			}
+			
+			memberVO.setMem_num(user_num);
+			
+			// 변경할 비밀번호 암호화
+			String encryPassword = MemberSha256.encrypt(memberVO.getPasswd());
+			memberVO.setPasswd(encryPassword);
+
+			// 비밀번호 변경
+			memberService.updateMemberPasswd(memberVO);
 		}
-		
-		// 비밀번호 변경
-		memberVO.setMem_num(user_num);
-		memberService.updateMemberPasswd(memberVO);
 		
 		return "redirect:/member/myPage.do";
 	}

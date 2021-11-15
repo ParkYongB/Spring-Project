@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="kr.spring.event.dao.EventMapper">
+	<select id="eventGetList" parameterType="map" resultType="eventVO">
+		SELECT
+		  *
+		FROM (SELECT 
+		        a.*,
+		        rownum rnum
+		      FROM (SELECT 
+		              event_num,
+		              <![CDATA[
+		              REPLACE(REPLACE( event_title,'<','&lt;'),'>','&gt;') event_title,
+		              REPLACE(REPLACE( event_type,'<','&lt;'),'>','&gt;') event_type,
+		              ]]>
+		               event_hits,
+		               event_reg_date,
+		               event_filename,
+		               event_day
+		            FROM event 
+		            <where>
+			            <if test="keyword != ''">
+			        		 event_type LIKE '%' || #{keyword} || '%'
+			        	</if>
+		            </where>	
+		            ORDER BY  event_reg_date DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}  
+		]]>
+	</select>
+
+	<select id="selectRowCount" parameterType="map" resultType="integer">
+		SELECT
+		  COUNT(*)
+		FROM event
+		<where>
+        	<if test="keyword != ''">
+        		 event_type LIKE '%' || #{keyword} || '%'
+        	</if>
+        </where>
+	</select>
+	
+	<!-- 글 수정 -->
+	<update id="eventUpdate" parameterType="eventVO">
+		UPDATE event SET
+			<if test="event_filename != ''">
+			event_photo = #{event_photo},
+			event_filename = #{event_filename},
+			</if>
+			event_title = #{event_title},
+			event_type = #{event_type},
+			event_content = #{event_content},
+			event_day = #{event_day},
+			event_modi = SYSDATE
+		WHERE event_num = #{event_num}
+	</update>
+	
+	<!-- 댓글 목록 -->
+	 <select id="selectListEComment" parameterType="map" resultType="eCommentVO">
+		SELECT
+		   *
+		FROM (SELECT
+				a.*,
+				rownum rnum
+			  FROM (SELECT
+					   b.comm_num,
+					   b.comm_content,
+					   TO_CHAR(b.comm_reg_date, 'YYYY-MM-DD HH24:MI:SS') comm_reg_date,
+					   TO_CHAR(b.comm_mod_date, 'YYYY-MM-DD HH24:MI:SS') comm_mod_date,
+					   b.event_num,
+					   b.mem_num,
+					   m.nickname,
+					   m.profile,
+					   m.profile_filename
+			  		FROM comments b JOIN mem_detail m ON b.mem_num = m.mem_num
+			  		WHERE b.event_num = #{event_num}
+			  		ORDER BY b.comm_num DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	
+	<!-- 댓글 총 개수 -->
+	<select id="selectRowCountComment" parameterType="map" resultType="integer">
+		SELECT
+		   COUNT(*)
+		FROM comments b JOIN mem_detail m ON b.mem_num = m.mem_num
+		WHERE b.event_num = #{event_num}
+		
+	</select>
+	
+	
+	<!-- 검색 결과 리스트 출력 -->
+	<select id="selectEventAllSearchList" parameterType="map" resultType="eventVO">
+		SELECT
+		  *
+		FROM (SELECT 
+		        a.*,
+		        rownum rnum
+		      FROM (SELECT 
+		              event_num,
+		              <![CDATA[
+		              REPLACE(REPLACE( event_title,'<','&lt;'),'>','&gt;') event_title,
+		              REPLACE(REPLACE( event_type,'<','&lt;'),'>','&gt;') event_type,
+		              ]]>
+		               event_hits,
+		               event_reg_date,
+		               event_filename,
+		               event_photo,
+		               event_day
+		            FROM event 
+		            <where>
+			            <if test="keyword != '' and keyfield == 1">
+			        		 event_title LIKE '%' || #{keyword} || '%' 
+			        		 OR event_content LIKE '%' || #{keyword} || '%' 
+			        		 OR event_type LIKE '%' || #{keyword} || '%'
+			        	</if>
+		            </where>	
+		            ORDER BY  event_num DESC)a)
+		<![CDATA[
+		WHERE rnum >= #{start} AND rnum <= #{end}
+		]]>
+	</select>
+	<!-- 검색 결과 총 개수 -->
+	<select id="selectEventAllSearchRowCount" parameterType="map" resultType="integer">
+		SELECT
+			 COUNT(*)
+		FROM event
+		<where>
+		   <if test="keyword != '' and keyfield == 1">
+        		 event_title LIKE '%' || #{keyword} || '%' 
+        		 OR event_content LIKE '%' || #{keyword} || '%' 
+        		 OR event_type LIKE '%' || #{keyword} || '%'
+        	</if>
+		</where>
+	</select>
+	
+</mapper>

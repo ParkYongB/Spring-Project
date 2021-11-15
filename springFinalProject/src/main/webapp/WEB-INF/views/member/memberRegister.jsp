@@ -140,45 +140,45 @@
 		
 	<form:form id="register_form" action="registerUser.do" modelAttribute="memberVO">
 		<div class = "form-group row">
-			<label class = "col-sm-3 col-form-label" for="mem_id">아이디&nbsp;</label>
+			<label class = "col-sm-2 col-form-label" for="mem_id">아이디&nbsp;</label>
 			<form:input path="mem_id" placeholder="4~12 영문,숫자만 허용"/>&nbsp;&nbsp;&nbsp;
-			<input class = "btn btn-outline-dark" type="button" id="confirmId" value="ID중복체크">
+			<input class = "btn btn-outline-dark" type="button" id="confirmId" value="ID중복체크">&nbsp;
 			<span id="message_id"></span>
 			<form:errors path="mem_id" cssClass="error-color"/>
 		</div>
 		<div class = "form-group row">
-				<label class = "col-sm-3 col-form-label" for="mem_name">이름&nbsp;</label>
+				<label class = "col-sm-2 col-form-label" for="mem_name">이름&nbsp;</label>
 				<form:input path="mem_name"/>
 				<form:errors path="mem_name" cssClass="error-color"/>
 		</div>	
 		<div class = "form-group row">
-				<label class = "col-sm-3 col-form-label" for="nickname">닉네임&nbsp;</label>
+				<label class = "col-sm-2 col-form-label" for="nickname">닉네임&nbsp;</label>
 				<form:input path="nickname"/>
 				<form:errors path="nickname" cssClass="error-color"/>
 		</div>
 		<div class = "form-group row">	
-				<label class = "col-sm-3 col-form-label" for="passwd">비밀번호&nbsp;</label>
+				<label class = "col-sm-2 col-form-label" for="passwd">비밀번호&nbsp;</label>
 				<form:password path="passwd" placeholder="4~12 영문,숫자만 허용"/>
 				<form:errors path="passwd" cssClass="error-color"/>
 		</div>	
 		<div class = "form-group row">
-				<label class = "col-sm-3 col-form-label" for="phone">전화번호&nbsp;</label>
+				<label class = "col-sm-2 col-form-label" for="phone">전화번호&nbsp;</label>
 				<form:input path="phone"/>
 				<form:errors path="phone" cssClass="error-color"/>
 		</div>
 		<div class = "form-group row">	
-				<label class = "col-sm-3 col-form-label" for="email">이메일&nbsp;</label>
+				<label class = "col-sm-2 col-form-label" for="email">이메일&nbsp;</label>
 				<form:input path="email"/>
 				<form:errors path="email" cssClass="error-color"/>
 		</div>
 		<div class = "form-group row">	
-				<label class = "col-sm-3 col-form-label" for="email_check">이메일인증&nbsp;</label>
+				<label class = "col-sm-2 col-form-label" for="email_check">이메일인증&nbsp;</label>
 				<input type="text" id="email_check" size="10" disabled="disabled">&nbsp;&nbsp;&nbsp;
 				<input class = "btn btn-outline-dark" type="button" id="email_send_button" value="인증번호전송">&nbsp;&nbsp;&nbsp;
 				<input type="button" id="email_check_button" class = "btn btn-outline-dark" value="인증확인">
 		</div>
 		<div class = "form-group row">	
-				<label class = "col-sm-3 col-form-label" for="zipcope">우편번호&nbsp;</label>
+				<label class = "col-sm-2 col-form-label" for="zipcope">우편번호&nbsp;</label>
 				<input id="zipcode" name="zipcode" placeholder="우편번호" type="text" value="" maxlength="5" readonly="readonly"/>&nbsp;&nbsp;&nbsp;
 				<input class = "btn btn-outline-dark" type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기">
 				
@@ -238,12 +238,12 @@
 			<form:errors path="zipcode" cssClass="error-color"/>
 			</div>
 			<div class = "form-group row">
-				<label class = "col-sm-3 col-form-label" for="address1">주소&nbsp;</label>
+				<label class = "col-sm-2 col-form-label" for="address1">주소&nbsp;</label>
 				<input id="address1" name="address1" type="text" value="" maxlength="30" readonly="readonly" placeholder="주소"/>
 				<form:errors path="address1" cssClass="error-color"/>
 			</div>
 			<div class = "form-group row">
-				<label class = "col-sm-3 col-form-label" for="address2">나머지주소&nbsp;</label>
+				<label class = "col-sm-2 col-form-label" for="address2">나머지주소&nbsp;</label>
 				<form:input path="address2" maxlength="30" placeholder="상세주소"/>
 				<form:errors path="address2" cssClass="error-color"/>
 			</div>
