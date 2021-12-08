@@ -4,7 +4,7 @@ Spring 을 이용한 MVC Project
 :clipboard:[개인 PPT](https://docs.google.com/presentation/d/1em3nVIRzGQaPTQxAkftDwLV0GyvE1tDw/edit?usp=sharing&ouid=106944710309042006841&rtpof=true&sd=true)
 
 ## **바로가기**
-1. [개요](https://github.com/procompiler/https://github.com/ParkYongB/Spring-Project/edit/main/README.md#1. 개요)
+1. [개요](https://github.com/procompiler/https://github.com/ParkYongB/Spring-Project/edit/main/README.md#1.-개요)
 2. [사용 기술]
 3. [개발기간 & 참여인원]
 4. [역할]
