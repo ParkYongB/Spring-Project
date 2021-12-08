@@ -1,5 +1,5 @@
 # Every Day Home
-Spring 을 이용한 MVC Project
+> Spring 을 이용한 MVC Project
 
 :clipboard:[프로젝트 PPT](https://docs.google.com/presentation/d/1em3nVIRzGQaPTQxAkftDwLV0GyvE1tDw/edit?usp=sharing&ouid=106944710309042006841&rtpof=true&sd=true)
 
@@ -11,11 +11,13 @@ Spring 을 이용한 MVC Project
 5. [ERD 설계](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#5-erd-%EC%84%A4%EA%B3%84)
 6. [작성 기능](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#6-%EC%9E%91%EC%84%B1-%EA%B8%B0%EB%8A%A5)
 7. [주요 기능](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#7-%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5)
+<br>
 
 ## **1. 개요** 
 - 온라인 집들이 커뮤니티 및 쇼핑몰 플랫폼인 오늘의 집의 벤치마킹 프로젝트 입니다.
 - DB : [SQL 쿼리문](https://github.com/ParkYongB/Spring-Project/blob/main/springFinalProject/src/main/webapp/sql/table.sql)
 - Email : umm_123@naver.com
+<br>
 
 ## **2. 사용 기술**
 - OS : Windows10 64bit
@@ -24,19 +26,23 @@ Spring 을 이용한 MVC Project
 - Framework : Spring Framework 5.0 Mybatis 3.2.2
 - DBMS : Oracle 11g Release2
 - Language : Java, HTML, CSS, JavaScript, JSP, jQuery, BootStrap, AJAX
+<br>
 
 ## **3. 개발기간 & 참여인원**
 - 2021/10/01 ~ 2021/10/24
 - 추가 작업 : 2021/10 ~ 2021/11
 - 팀 프로젝트 : 오상준, 신혜지, 이현지, 나윤경, 박용복
+<br>
 
 ## **4. 역할**
 - 상품 등록 및 수정
 - 장바구니
 - 구매 
+<br>
 
 ## **5. ERD 설계**
 ![image](https://user-images.githubusercontent.com/90167580/145189316-8940ce11-177a-4054-a6fd-f89790bc041e.png)
+<br>
 
 ## **6. 작성 기능**
 - 상품 등록 및 상품 목록 출력 기능
@@ -44,6 +50,7 @@ Spring 을 이용한 MVC Project
 - 상품 주문 기능
 - 상품 주문 후 카카오페이 API 연동을 통한 가상 결제
 - SHA-256 암호화
+<br>
 
 ## **7. 주요 기능**
 - 회원가입 시 메일 API, 카카오 주소 API 적용
