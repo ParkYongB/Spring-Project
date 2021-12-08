@@ -5,12 +5,12 @@ Spring 을 이용한 MVC Project
 
 ## **바로가기**
 1. [개요](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#1-%EA%B0%9C%EC%9A%94)
-2. [사용 기술]()
-3. [개발기간 & 참여인원]()
-4. [역할]()
-5. [ERD 설계]()
-6. [작성 기능]()
-7. [주요 기능]()
+2. [사용 기술](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#2-%EC%82%AC%EC%9A%A9-%EA%B8%B0%EC%88%A0)
+3. [개발기간 & 참여인원](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#3-%EA%B0%9C%EB%B0%9C%EA%B8%B0%EA%B0%84--%EC%B0%B8%EC%97%AC%EC%9D%B8%EC%9B%90)
+4. [역할](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#4-%EC%97%AD%ED%95%A0)
+5. [ERD 설계](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#5-erd-%EC%84%A4%EA%B3%84)
+6. [작성 기능](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#6-%EC%9E%91%EC%84%B1-%EA%B8%B0%EB%8A%A5)
+7. [주요 기능](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#6-%EC%9E%91%EC%84%B1-%EA%B8%B0%EB%8A%A5)
 
 ## **1. 개요** 
 - 온라인 집들이 커뮤니티 및 쇼핑몰 플랫폼인 오늘의 집의 벤치마킹 프로젝트 입니다.
