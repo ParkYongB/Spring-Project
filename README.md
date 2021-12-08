@@ -14,8 +14,7 @@ Spring 을 이용한 MVC Project
 
 ## **1. 개요** 
 - 온라인 집들이 커뮤니티 및 쇼핑몰 플랫폼인 오늘의 집의 벤치마킹 프로젝트 입니다.
-- DB : [SQL 쿼리문](./src/webapp/sql/table.sql)
-- src - webapp - sql - table.sql 에 DB 쿼리문 저장되어 있습니다.
+- DB : [SQL 쿼리문](https://github.com/ParkYongB/Spring-Project/blob/main/springFinalProject/src/main/webapp/sql/table.sql)
 - Email : umm_123@naver.com
 
 ## **2. 사용 기술**
