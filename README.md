@@ -10,7 +10,7 @@ Spring 을 이용한 MVC Project
 4. [역할](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#4-%EC%97%AD%ED%95%A0)
 5. [ERD 설계](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#5-erd-%EC%84%A4%EA%B3%84)
 6. [작성 기능](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#6-%EC%9E%91%EC%84%B1-%EA%B8%B0%EB%8A%A5)
-7. [주요 기능](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#6-%EC%9E%91%EC%84%B1-%EA%B8%B0%EB%8A%A5)
+7. [주요 기능](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#7-%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5)
 
 ## **1. 개요** 
 - 온라인 집들이 커뮤니티 및 쇼핑몰 플랫폼인 오늘의 집의 벤치마킹 프로젝트 입니다.
