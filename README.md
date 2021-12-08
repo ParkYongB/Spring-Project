@@ -1,7 +1,7 @@
 # Every Day Home
 Spring 을 이용한 MVC Project
 
-:clipboard:[개인 PPT](https://docs.google.com/presentation/d/1em3nVIRzGQaPTQxAkftDwLV0GyvE1tDw/edit?usp=sharing&ouid=106944710309042006841&rtpof=true&sd=true)
+:clipboard:[프로젝트 PPT](https://docs.google.com/presentation/d/1em3nVIRzGQaPTQxAkftDwLV0GyvE1tDw/edit?usp=sharing&ouid=106944710309042006841&rtpof=true&sd=true)
 
 ## **바로가기**
 1. [개요](https://github.com/ParkYongB/Spring-Project/blob/main/README.md#1-%EA%B0%9C%EC%9A%94)
